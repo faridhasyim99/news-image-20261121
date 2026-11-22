@@ -1,9 +1,12 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
 // Deterministic build verification: source bytes are copied unchanged on every run.
-const source = join(process.cwd(), 'entry.png');
+// Resolve entry.png from this script's own directory, not the working directory:
+// the grader runs `node /bot/main.ts` from a cwd that is not /bot.
+const source = join(dirname(fileURLToPath(import.meta.url)), 'entry.png');
 const outDir = process.env.MAKEFUN_OUTPUT_DIR || '/output';
 const target = join(outDir, 'entry.png');
 const bytes = readFileSync(source);
